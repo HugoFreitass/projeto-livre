@@ -12,9 +12,9 @@ class Stock:
                 return pickle.load(file)
         return []
     
-    def save_stock(self):
+    def save_stock(self, stock):
         with open(self._file_name, 'wb') as file:
-            pickle.dump(self._stock, file)
+            pickle.dump(stock, file)
 
     def register(self, product):
         if not isinstance(product, Product):
@@ -23,6 +23,4 @@ class Stock:
         stock = self.load_stock()
         stock.append(product)
         self.save_stock(stock)
-        return f"Produto {product.get_name} registrado com sucesso"
-        
-    
+        return f"Produto {product.name} registrado com sucesso"
