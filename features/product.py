@@ -1,9 +1,21 @@
 class Product:
-    def __init__(self, barcode, name, price, amount): #criar uma classe para adicionar esses dados
+    def __init__(self, barcode, name, price, amount): #criar um método para adicionar esses dados
         self._barcode = int(barcode)
         self._name = name
         self._price = float(price)
         self._amount = int(amount)
+        self._position = 0
+    
+    @property
+    def position(self):
+        return self._position
+    
+    @position.setter
+    def position(self, new_position):
+        if type(new_position) != int:
+            raise ValueError("A posição deve ser um número inteiro")
+        
+        self._position = new_position
         
     @property
     def barcode(self):
@@ -50,4 +62,7 @@ class Product:
         self._price = new_price
     
     def __str__(self):
-        return f"Barcode: {self._barcode}, Name: {self._name}, Price: {self._price}, Amount: {self._amount}"
+        return f"Name: {self._name}, Barcode: {self._barcode}, Price: {self._price}, Amount: {self._amount}"
+    
+    # def __repr__(self):
+    #     return {"Name" : {self._name}, "Barcode" : {self._barcode}, "Price" : {self._price}, "Amount" : {self._amount}}
