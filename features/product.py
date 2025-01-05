@@ -62,7 +62,8 @@ class Product:
         self._price = new_price
     
     def __str__(self):
-        return f"Name: {self._name}, Barcode: {self._barcode}, Price: {self._price}, Amount: {self._amount}"
+        return f"| Nome: {self._name} | Código: {self._barcode} | Preço: {self._price} | Quantidade: {self._amount} |"
     
-    # def __repr__(self):
-    #     return {"Name" : {self._name}, "Barcode" : {self._barcode}, "Price" : {self._price}, "Amount" : {self._amount}}
+    def __repr__(self):
+        return f"| Nome: {self._name} | Código: {self._barcode} | Preço: {self._price} | Quantidade: {self._amount} |"
+    

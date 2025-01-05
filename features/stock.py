@@ -55,8 +55,11 @@ class Stock:
         del product
 
         self.save_stock(stock)
-
-    def __str__(self):
-        pass
-
-        
+    
+    #A maneira como Stock foi implementado permite isso: 
+    #load_stock retorna uma lista de objetos e o pickle lê apenas essa lista,
+    # então lê todos os objetos de uma vez
+    def list_stock(self): 
+        stock_list = self.load_stock()
+        for product in stock_list:
+            print(product)
