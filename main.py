@@ -1,7 +1,7 @@
 import tkinter as tk 
-from features.product import Product
-from features.stock import Stock
-from features.sales import Sales
+from packages.product import Product
+from packages.stock import Stock
+from packages.sales import Sales
 
 # Products()
 # root = Tk()
