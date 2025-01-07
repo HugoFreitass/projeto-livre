@@ -18,29 +18,29 @@ class Stock:
 
     def register_product(self, product: Product) -> str:
         if not isinstance(product, Product):
-            raise ValueError("Formato inválido")
+            raise ValueError("Formato inválido.")
 
         stock = self.__load_stock()
         stock.append(product)
         self.__save_stock(stock)
 
-        return f"Produto {product.name} registrado com sucesso"
+        return f"Produto: '{product.name}' registrado com sucesso!"
     
     def get_product(self, barcode: int) -> Product:
         stock = self.__load_stock()
         for product in stock:
             if product.barcode == barcode:
                 return product
-        raise ValueError("Produto não encontrado")    
+        raise ValueError("Produto não encontrado.")    
     
     def update_amount(self, barcode: int, new_amount: int) -> str:
         stock = self.__load_stock()
         for product in stock:
             if product.barcode == barcode:
                 product.amount = new_amount
-            self.__save_stock(stock)
-            return "Quantidade do produto atualizada com sucesso"
-        raise ValueError("Produto não encontrado")
+                self.__save_stock(stock)
+                return "Quantidade do produto atualizada com sucesso!"
+        raise ValueError("Produto não encontrado.")
 
     def delete_product(self, barcode: int) -> str:
         stock = self.__load_stock()
@@ -48,8 +48,8 @@ class Stock:
             if product.barcode == barcode:
                 del stock[index]
                 self.__save_stock(stock)
-                return "Produto deletado com sucesso"
-        raise ValueError("Produto não encontrado")
+                return "Produto deletado com sucesso!"
+        raise ValueError("Produto não encontrado.")
     
     def list_stock(self) -> None: 
         stock_list = self.__load_stock()

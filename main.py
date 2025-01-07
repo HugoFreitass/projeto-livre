@@ -1,96 +1,132 @@
-import tkinter as tk 
-from packages.product import Product
-from packages.stock import Stock
-from packages.sales import Sales
+from managementSys import ManagementSystem
+import os
+import time
 
-# Products()
-# root = Tk()
-# root.title('Sistema de gestão de estoque')
-# root.geometry('900x600')
-# root.minsize(900, 600)
-# root.maxsize(900, 600)
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-#Precisa ter:
-#O programa irá se iniciar na página de gestão, com opção de mudar para página de cadastro, de vendas e de estoque
-#Main:
-#Junta as outras classes em um programa funcional, usando tkinter para a interface visual
-#
-#As seguintes classes:
-#Produtos-
-#   É a classe que estrutura todo o programa, as outros irão trabalhar com objetos dessa classe
-#   --> código, nome, descricção, preço, quantidade (custo, validade, data de compra)
-#Estoque-
-#   Mostra uma lista do estoque
-#   --> CRUD
-#Cadastro-
-#   É onde cadastramos novos produtos
-#   -->
-#Vendas-
-#   Deve buscar os produtos pelo código e ir somando os preços
-#   --> (forma de pagamento)
+app = ManagementSystem()
 
-class App(tk.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("Exemplo de Páginas no Tkinter")
-        self.geometry("400x300")
-        
-        # Dicionário para armazenar as páginas
-        self.pages = {}
-        
-        # Adiciona as páginas
-        for Page in (PaginaInicial, Pagina1, Pagina2):
-            page_name = Page.__name__
-            frame = Page(parent=self, controller=self)
-            self.pages[page_name] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
-        
-        self.show_page("PaginaInicial")
-    
-    def show_page(self, page_name):
-        """Exibe a página solicitada"""
-        frame = self.pages[page_name]
-        frame.tkraise()
+while True:
 
-class PaginaInicial(tk.Frame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
-        self.controller = controller
-        
-        label = tk.Label(self, text="Página Inicial", font=("Arial", 16))
-        label.pack(pady=20)
-        
-        btn_pagina1 = tk.Button(self, text="Ir para Página 1",
-                                command=lambda: controller.show_page("Pagina1"))
-        btn_pagina1.pack(pady=10)
-        
-        btn_pagina2 = tk.Button(self, text="Ir para Página 2",
-                                command=lambda: controller.show_page("Pagina2"))
-        btn_pagina2.pack(pady=10)
+    clear()
+    print("\nBem vindo ao sistema de vendas")
+    print("O que deseja fazer?")
+    choice = input("[1] Cadastro de produtos\n[2] Listagem do estoque\n[3] Atualizar quantidade no estoque\n[4] Remover produto do estoque\n[5] Página de vendas\n[s] Sair\n")
 
-class Pagina1(tk.Frame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
-        self.controller = controller
-        
-        label = tk.Label(self, text="Página 1", font=("Arial", 16))
-        label.pack(pady=20)
-        
-        btn_voltar = tk.Button(self, text="Voltar para Página Inicial",
-                               command=lambda: controller.show_page("PaginaInicial"))
-        btn_voltar.pack(pady=10)
+    if choice == 's':
+        break
 
-class Pagina2(tk.Frame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
-        self.controller = controller
-        
-        label = tk.Label(self, text="Página 2", font=("Arial", 16))
-        label.pack(pady=20)
-        
-        btn_voltar = tk.Button(self, text="Voltar para Página Inicial",
-                               command=lambda: controller.show_page("PaginaInicial"))
-        btn_voltar.pack(pady=10)
+    while choice == '1':
+        clear()
+        print("\nCadastro de produtos")
+        barcode = int(input("Digite o código de barras: "))
 
-app = App()
-app.mainloop()
+        try:
+            app.get_product(barcode)
+            print("Produto já cadastrado.\n")
+            time.sleep(2)
+            continue
+        except ValueError:
+            pass
+
+        name = input("Digite o nome do produto: ")
+        price = float(input("Digite o preço do produto: "))
+        amount = int(input("Digite a quantidade do produto: "))
+        
+        try:
+            print(app.register_product(barcode, name, price, amount),"\n")
+        except ValueError as error:
+            print(error,"\n")
+            continue
+
+        answer = input("Deseja cadastrar mais produtos? [s/n]\n")
+        if answer == 's':
+            continue
+        elif answer == 'n':
+            choice = None
+
+    if choice == '2':
+        clear()
+        print("\nListagem do estoque")
+        app.list_stock()
+        print("\n")
+
+        if input("Pressione Enter para voltar ao menu.") != None:
+            choice = None
+
+    if choice == '3':
+        clear()
+        barcode = int(input("\nDigite o código de barras do produto que deseja atualizar a quantidade:\n"))
+        new_amount = int(input("Digite a nova quantidade:\n"))
+        
+        try:
+            print("\n",app.update_amount(barcode, new_amount))
+            print(app.get_product(barcode),"\n")
+        except ValueError as error:
+            print(error, "\n")
+            continue
+
+    if choice == '4':
+        clear()
+        barcode = int(input("\nDigite o código de barras do produto que deseja remover:\n"))
+        
+        try:
+            print(app.delete_product(barcode))
+            time.sleep(2)
+        except ValueError as error:
+            print(error, "\n")
+            time.sleep(2)
+            continue
+
+    while choice == '5':
+        clear()
+        print("\nPágina de vendas")
+        sale = app.new_sale()
+        
+        while True:
+            clear()
+            print("\nVenda em andamento:")
+            print("Para finalizar a venda, digite '-1' quando for solicitado o código de barras do produto.\n\n")
+            
+            sale.list_sale()
+            barcode = int(input("\n\nCódigo de barras: "))
+            
+            if barcode == -1:
+                break
+            
+            try:
+                sale.add_product(barcode, 1)
+            except ValueError as error:
+                print(error)
+                time.sleep(2)
+                continue
+            
+        remove = input("\nDeseja remover algum produto da venda? [s/n]\n")
+        if remove == 's':
+            while True:
+                clear()
+                print("\nVenda em andamento:")
+                sale.list_sale()
+                barcode = int(input("\n\nCódigo de barras do produto que deseja remover: "))
+                
+                try:
+                    print(sale.remove_product(barcode))
+                except ValueError as error:
+                    print(error)
+
+
+                remove_more = input("\nDeseja remover mais produtos? [s/n]\n")
+                if remove_more == 's':
+                    continue
+                elif remove_more == 'n':
+                    break
+
+        clear()
+        print("\n\nResumo da venda:")
+        sale.list_sale()
+        
+        print("\nObrigado pela compra!\n")
+
+        if input("Pressione Enter para voltar ao menu.") != None:
+            choice = None

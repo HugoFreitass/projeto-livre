@@ -50,5 +50,5 @@ class Product:
         self._price = new_price
     
     def __str__(self):
-        return f"| Nome: {self._name} | Código: {self._barcode} | Preço: {self._price:.2f} | Quantidade: {self._amount} |"
+        return f"| Nome: {self._name} | Código: {self._barcode} | Preço: R$ {self._price:.2f} | Quantidade: {self._amount} |"
     
